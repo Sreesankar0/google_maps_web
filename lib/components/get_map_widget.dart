@@ -2,14 +2,26 @@ import 'package:flutter/material.dart';
 import 'dart:html';
 import 'dart:ui' as ui;
 import 'package:google_maps/google_maps.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 Widget getMap() {
+  final databaseRef = FirebaseDatabase.instance.reference();
+
+  double currentlatitude = 0.0;
+  double currentlongitude = 0.0;
+
   //A unique id to name the div element
   String htmlId = "6";
   //creates a webview in dart
   //ignore: undefined_prefixed_name
   ui.platformViewRegistry.registerViewFactory(htmlId, (int viewId) {
-    final latLang = LatLng(12.9007616, 77.6568832);
+    String deviceid = "01c7f25788962d88";
+    databaseRef.child(deviceid).once().then((DataSnapshot snapshot) {
+      currentlatitude = snapshot.value['latitude'];
+      currentlongitude = snapshot.value['longitude'];
+    });
+
+    final latLang = LatLng(currentlatitude, currentlongitude);
     //class to create a div element
 
     final mapOptions = MapOptions()
